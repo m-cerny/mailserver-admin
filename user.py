@@ -1,7 +1,6 @@
 import subprocess
 import re, os
 from nicegui import ui
-from config import CONST
 
 # Add to conf file
 admins = os.getenv("ADMINS")

@@ -1,6 +1,5 @@
 from nicegui import ui
 import re
-# from config import CONST
 from user import process
 
 class Admin:
