@@ -27,7 +27,6 @@ services:
     image: ghcr.io/docker-mailserver/docker-mailserver:latest
     container_name: mailserver
     hostname: ###
-    env_file: ./dms/mailserver.env
     ports:
       - "25:25"
       - "143:143"
@@ -78,7 +77,6 @@ services:
     tty: true
     networks:
       - mailnet
-    entrypoint: /bin/sh
 
 networks:
   mailnet:
