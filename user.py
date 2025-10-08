@@ -1,12 +1,30 @@
 import subprocess
-import re, os
+import re, os, asyncio
 from nicegui import ui
 
 # Add to conf file
 admins = os.getenv("ADMINS")
 admins = [e.strip() for e in admins.split(",")]
-print(admins)
 container_name = os.getenv("CONT_NAME")
+
+# async def process(*args: str) -> dict:
+#     """
+#     keys: rc, stdout, stderr
+#     """
+#     proc = await asyncio.create_subprocess_exec(
+#         "docker", "exec", "-i", container_name, "setup", *args,
+#         stdout=asyncio.subprocess.PIPE,
+#         stderr=asyncio.subprocess.PIPE
+#     )
+
+#     stdout, stderr = await proc.communicate()
+
+#     return {
+#         "rc": proc.returncode,
+#         "stdout": stdout.decode().strip(),
+#         "stderr": stderr.decode().strip()
+#     }
+
 
 def process(*args:str) -> dict:
     """
@@ -64,7 +82,6 @@ class User:
         output = process("email", "list")
         if output["rc"] == 0:
             output = output["stdout"]
-            print(output)
 
     def init(self, user=True):
         output = process("email", "list")
@@ -102,9 +119,8 @@ class User:
                         "usage_percent": usage_percent,
                     }
 
-            print("Result keys:", list(result.keys()))
             if user == True:
-                print("Looking for:", self.name)
+                # print("Looking for:", self.name)
 
                 if self.name not in result:
                     raise ValueError(f"E-mail {self.name} nebyl nalezen.")
@@ -115,9 +131,6 @@ class User:
                 self.usage_percent = result[self.name]["usage_percent"]
             if user == False:
                 pass
-        
-    def init_quota(self):
-        pass
                 
     def setup (self, fc, alias=None, new_pswd=None,):
 
@@ -131,7 +144,6 @@ class User:
                 if output["rc"] == 0:
                     ui.notify(f"Alias: {alias} added", type='positive')
                     self.aliases.append(alias)
-                    # print(self.aliases)
                 else:
                     ui.notify("Something went wrong!", type='negative')
 
@@ -171,4 +183,3 @@ class User:
         """Validate the format of an email address."""
         email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
         return re.match(email_regex, email) is not None
-#print(overview())

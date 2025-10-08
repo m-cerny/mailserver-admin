@@ -1,6 +1,28 @@
 from nicegui import ui, app
 from passlib.hash import sha512_crypt
+from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi.responses import RedirectResponse
+from fastapi import Request
 
+class AuthMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        path = request.url.path
+
+        # Ignore NiceGUI static files
+        if path.startswith('/_nicegui'):
+            return await call_next(request)
+
+        # Ignore unrestricted pages
+        unrestricted_page_routes = {'/login', '/admin/login'}
+        if path in unrestricted_page_routes:
+            return await call_next(request)
+
+        # Redirect if not authenticated
+        if not app.storage.user.get('authenticated', False):
+            redirect_path = path if path not in unrestricted_page_routes else '/'
+            return RedirectResponse(f'/login?redirect_to={redirect_path}')
+
+        return await call_next(request)
 # Authentication class
 class Authentification:
     def __init__(self):
