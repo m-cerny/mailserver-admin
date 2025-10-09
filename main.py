@@ -255,9 +255,10 @@ def admin_page():
 
                                 # Add user
                                 with ui.card():
-                                    async def click_handle_add(username_, password_):
-                                        if User.is_valid_email(username_):
-                                            Admin.email("add", username_, password_)
+                                    async def click_handle_add():
+                                        if User.is_valid_email(username.value):
+                                            Admin.email("add", username.value, password.value)
+                                            await asyncio.sleep(3)
                                             overview.update_rows(rows=Admin.table_data(Admin.overview()))
                                             add_user.close()    
 
@@ -267,9 +268,8 @@ def admin_page():
                                     ui.label("Add a new user:")
                                     username = ui.input('Username', password=False,
                                                         validation={'wrong format!': lambda value: User.is_valid_email(value)})
-                                    password = ui.input('Password', password=True, password_toggle_button=True).on(
-                                        'keydown.enter', lambda e: click_handle_add(username.value, password.value))
-                                    ui.button('Confirm', on_click=lambda e: click_handle_add(username.value, password.value))
+                                    password = ui.input('Password', password=True, password_toggle_button=True)
+                                    ui.button('Confirm', on_click=click_handle_add)
 
                             ui.button("Add a new user", on_click=lambda: add_user.open())
 
