@@ -2,6 +2,11 @@
 
 A web-based administration interface for managing user accounts on [docker-mailserver](https://github.com/docker-mailserver/docker-mailserver).
 
+You can try a demo of the app:: 
+- [demo web site](https://demo-mail.redandblack.cz)
+- username: demouser@demo.demo
+- password: demouser
+
 ## Features
 
 - **User Management**: Add, update, and delete mail users.
